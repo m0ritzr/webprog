@@ -1,0 +1,33 @@
+Reflection q 1:
+The render function must be a pure function of props and the component state, the values returned by useState(). 
+What happens if the output of the render function is depending on other data that changes over time?
+    react relies on changes in state or props to decide if it should re-render a component
+    so, if the output depends on other data it will not update if the data changes
+
+reflection q 2:
+In the code above, the foundations array is computed every time
+the component is rendered. The inventory changes very infrequent so you might think this
+is inefficient. Can you cache foundations so it is only computed when props.inventory
+changes?
+    We could use useEffect and specify inventory as the second param. Then, React would compute the foundations array
+    only when inventory is updated. But this would also cause a re-render every time
+
+reflection q 3:
+What triggers React to call the render function and update the DOM?
+    Render function is called when state or props change. So either, 
+    when we use setState or when a parent component passes down new props
+
+reflection q 4: When the user changes the HTML form state (DOM), does this change the state of your component?
+    Not automatically, the user can check a checkbox and nothing will happen if we haven't implemented the handling of the event.
+    So, we need to make sure changes to the dom are reflected in our component by using onChange events or similar
+
+reflection q 5:
+What is the value of this in the event handling call-back functions?
+    Typically it would be undefined, as in react, you should use arrow functions to handle events
+
+Reflection q 6: 
+How is the prototype chain affected when copying an object with copy = {...sourceObject}?  
+    We're creating a new object with the same properties as sourceObject, so it's not connected to the old object's prototype chain any more.
+    Properties that are copied over might still have a connection?
+
+

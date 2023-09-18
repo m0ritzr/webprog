@@ -1,4 +1,7 @@
-function SaladItemDisplay({salad, component}) {
+import { useSalads } from './SaladsContext';
+import { useSaladsDispatch } from './SaladsContext';
+
+export function SaladItemDisplay({salad, component}) {
   var label = ""; 
   switch (component) {
     case 'foundation': 
@@ -44,20 +47,27 @@ function SaladDisplay({salad, removeSalad}) {
  )
 }
 
-function ViewOrder({shoppingCart, removeSalad}) {
+function ViewOrder() {
+    const shoppingCart = useSalads();
+    const dispatch = useSaladsDispatch();
+
+    const removeSalad = (salad) => {
+      // Dispatch the 'removed' action to remove the salad
+      dispatch({ type: 'removed', salad });
+    };
     
     return(
       <div className="container-fluid">
-      <div className="row h-200 p-5 bg-light border rounded-3">
-          <h2>Din beställning</h2>
-          {(shoppingCart.length === 0) ? <p>Plocka ihop en sallad för att lägga till den i din beställning</p> : <></>}
-          <ul className="w-100">
-              {shoppingCart.map((salad) => (
-                  <li key={salad.uuid} className="mb-3">
-                      <SaladDisplay salad={salad} removeSalad={removeSalad} />
-                  </li>
-              ))}
-          </ul>
+        <div className="row h-200 p-5 bg-light border rounded-3">
+            <h2>Din beställning</h2>
+            {(shoppingCart.length === 0) ? <p>Plocka ihop en sallad för att lägga till den i din beställning</p> : <></>}
+            <ul className="w-100">
+                {shoppingCart.map((salad) => (
+                    <li key={salad.uuid} className="mb-3">
+                        <SaladDisplay salad={salad} removeSalad={removeSalad} />
+                    </li>
+                ))}
+            </ul>
       </div>
   </div>  
     );

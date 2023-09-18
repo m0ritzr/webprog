@@ -1,20 +1,26 @@
 import { useState } from 'react';
 import Salad from './Salad';
+import { useSaladsDispatch } from './SaladsContext';
+import { useNavigate } from "react-router-dom";
+
 
 function OptionsSingleSelector({options, value, onChange }) {
   return (
-    <select value={value} onChange={(e) => onChange(e.target.value)}>
+    <div>
+    <select required value={value} onChange={onChange}>
+      <option value=''>Gör ditt val</option>
       {options.map(([name, props]) => 
         <option value={name} key={name}>
           {name}, {props.price} kr
         </option>
       )}
     </select>
+    <div className='invalid-feedback'>Du måste välja en</div>
+    </div>
   )
 }
 
 function OptionsMultiSelector({options, values, onSelection}) {
-  console.log(JSON.stringify(values));
   return(
     <div className="row h-200 p-5 bg-light border rounded-3">
       {options.map(([name, props]) => (
@@ -39,15 +45,22 @@ function ComposeSalad({inventory, addSalad}) {
   let extras = Object.entries(inventory).filter(([name, props]) => props.extra);
   let dressings = Object.entries(inventory).filter(([name, props]) => props.dressing);
 
-  const [foundation, setFoundation] = useState('Pasta'); 
-  const [protein, setProtein] = useState('Norsk fjordlax'); 
-  const [dressing, setDressing] = useState('Pesto');
-  const [extra, setExtra] = useState({Bacon: true, Fetaost: true});
+  const [foundation, setFoundation] = useState(''); 
+  const [protein, setProtein] = useState(''); 
+  const [dressing, setDressing] = useState('');
+  const [extra, setExtra] = useState({});
 
-  const handleFoundationSelection = (selectedFoundation) => {
+  const dispatch = useSaladsDispatch();
+  const navigate = useNavigate();
+
+  const handleFoundationSelection = (event) => {
+    event.preventDefault();
+    const selectedFoundation = event.target.value;
     setFoundation(selectedFoundation);
-  }
-  const handleProteinSelection = (selectedProtein) => {
+  } 
+  const handleProteinSelection = (event) => {
+    event.preventDefault();
+    const selectedProtein = event.target.value;
     setProtein(selectedProtein);
   }
 
@@ -61,14 +74,19 @@ function ComposeSalad({inventory, addSalad}) {
     } else { 
       setExtra({...extra, [selectedExtra]: true})
     }
+
+    // kolla på checkboxen's värde
   }
 
-  const handleDressingSelection = (selectedDressing) => {
+  const handleDressingSelection = (event) => {
+    event.preventDefault();
+    const selectedDressing = event.target.value;
     setDressing(selectedDressing);
   }
 
-  const makeCeasarSalad = (e) => {
-    e.preventDefault();setFoundation('Sallad');
+  const makeCeasarSalad = (event) => {
+    event.preventDefault();
+    setFoundation('Sallad');
     setProtein('Kycklingfilé');
     setExtra({
       Bacon: true,
@@ -79,9 +97,13 @@ function ComposeSalad({inventory, addSalad}) {
     setDressing('Ceasardressing');
   }
 
+  const handleFormSubmit = (event) => {
+    event.preventDefault();
+    if (foundation === '' || protein === '' || dressing === '') {
+      event.target.classList.add("was-validated");
+      return null;
+    }
 
-  const handleFormSubmit = (e) => {
-    e.preventDefault();
     const salad = new Salad();
     salad.add(foundation, inventory[foundation])
     salad.add(protein, inventory[protein])
@@ -89,19 +111,24 @@ function ComposeSalad({inventory, addSalad}) {
     for (const [name, bool] of Object.entries(extra)) {
       if (bool) salad.add(name, inventory[name])
     }
-    addSalad(salad);
+    
+    dispatch({type: 'added', salad: salad})
+
     // Reset the selections
-    setFoundation('Sallad');
-    setProtein('Kycklingfilé');
-    setDressing('Ceasardressing');
+    setFoundation('');
+    setProtein('');
+    setDressing('');
     setExtra({});
+    event.target.classList.remove("was-validated");
+
+    navigate(`/view-order/confirm/${salad.uuid}`)
   };
 
   return (
     <div className="container col-12">
       <div className="row h-200 p-5 bg-light border rounded-3">
         <h2>Välj innehållet i din sallad</h2>
-        <form onSubmit={handleFormSubmit}>
+        <form onSubmit={handleFormSubmit} noValidate>
           <h4 className="mt-4">Välj bas</h4>
           <OptionsSingleSelector 
             options={foundations} 
@@ -126,7 +153,7 @@ function ComposeSalad({inventory, addSalad}) {
             value={dressing} 
             onChange={handleDressingSelection} 
           />
-          <button className="btn btn-primary align-self-end" onClick={makeCeasarSalad}>Ceasar</button>
+          <button className="btn btn-primary align-self-end" type="button" onClick={makeCeasarSalad}>Ceasar</button>
           <button className="btn btn-primary align-self-end" type="submit">Lägg till i beställningen</button>
         </form>
       </div>

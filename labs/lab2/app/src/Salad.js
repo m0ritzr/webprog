@@ -18,8 +18,8 @@ class Salad {
     }
 
     getPrice() {
-      const price = Object.keys(this.ingredients)
-      .map((item) => this.ingredients[item].price)
+      const price = Object.entries(this.ingredients)
+      .map(([item, props]) => props.price)
       .reduce((sum, price) => sum + price);
       return price;
     };

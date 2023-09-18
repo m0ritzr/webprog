@@ -1,3 +1,5 @@
+lab2:
+
 Reflection q 1:
 The render function must be a pure function of props and the component state, the values returned by useState(). 
 What happens if the output of the render function is depending on other data that changes over time?
@@ -30,4 +32,13 @@ How is the prototype chain affected when copying an object with copy = {...sourc
     We're creating a new object with the same properties as sourceObject, so it's not connected to the old object's prototype chain any more.
     Properties that are copied over might still have a connection?
 
+Lab3:
+Q1: How do you replace the favicon?
+with <link rel="icon" href="/favicon.ico" /> in index.HTML
 
+Reflection Question 2: If you use nav-pills instead of nav-tabs the selected page is no
+longer highlighted in the menu, why? Hint: <NavLink> and the active css class.
+    We're using the nav-link css class, so if we use nav-pills we need to use nav-pill class
+
+Reflection Question 3: What is the meaning of a leading / in a path?
+    It's relative or absolute paths, if we lead with / it's the absolute path

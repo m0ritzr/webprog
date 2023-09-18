@@ -3,11 +3,19 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { RouterProvider } from 'react-router-dom';
+import router from './router.js';
+import { SaladsProvider } from './SaladsContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    {/* Wrap the entire application with SaladsProvider */}
+    <SaladsProvider>
+      <RouterProvider router={router}>
+        <App />
+      </RouterProvider>
+    </SaladsProvider>
   </React.StrictMode>
 );
 

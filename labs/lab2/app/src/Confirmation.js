@@ -1,10 +1,10 @@
-import React from 'react';
-import { useParams } from 'react-router-dom';
-import { useSalads } from './SaladsContext'; 
+import React from "react";
+import { useParams } from "react-router-dom";
+import { useSalads } from "./SaladsContext";
 
 function Confirmation() {
   const { saladUuid } = useParams();
-  const salads = useSalads(); 
+  const salads = useSalads();
 
   // Find the salad with the matching UUID
   const confirmedSalad = salads.find((salad) => salad.uuid === saladUuid);
@@ -15,7 +15,7 @@ function Confirmation() {
         <h2>Confirmation for Salad</h2>
         {confirmedSalad ? (
           <>
-            <p>Salad: {Object.keys(confirmedSalad.ingredients).join(', ')}</p>
+            <p>Salad: {Object.keys(confirmedSalad.ingredients).join(", ")}</p>
             <p>Total Price: {confirmedSalad.getPrice()} kr</p>
           </>
         ) : (

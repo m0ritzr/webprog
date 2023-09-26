@@ -1,14 +1,12 @@
-import { createContext, useContext, useReducer } from 'react';
+import { createContext, useContext, useReducer } from "react";
+import Salad from "./Salad";
 
 const SaladsContext = createContext(null);
 
 const SaladsDispatchContext = createContext(null);
 
 export function SaladsProvider({ children }) {
-  const [salads, dispatch] = useReducer(
-    saladsReducer,
-    initialSalads
-  );
+  const [salads, dispatch] = useReducer(saladsReducer, initialSalads);
 
   return (
     <SaladsContext.Provider value={salads}>
@@ -28,18 +26,30 @@ export function useSaladsDispatch() {
 }
 
 function saladsReducer(salads, action) {
+  var saladsList = salads;
   switch (action.type) {
-    case 'added': {
-      return [...salads, action.salad];
+    case "added": {
+      saladsList = [...salads, action.salad];
+      break;
     }
-    case 'removed': {
-      return salads.filter(s => s.uuid !== action.salad.uuid);
+    case "removed": {
+      saladsList = salads.filter((s) => s.uuid !== action.salad.uuid);
+      break;
     }
     default: {
-      throw Error('Unknown action: ' + action.type);
+      throw Error("Unknown action: " + action.type);
     }
   }
+  localStorage.setItem("salads", JSON.stringify(saladsList));
+  return saladsList;
 }
 
-const initialSalads = [
-];
+const initialSalads = fetchSaladsFromLocalStorage();
+
+function fetchSaladsFromLocalStorage() {
+  if (!localStorage.getItem("salads")) {
+    return [];
+  } else {
+    return Salad.parse(localStorage.getItem("salads"));
+  }
+}

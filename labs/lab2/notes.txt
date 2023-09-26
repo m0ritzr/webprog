@@ -37,8 +37,8 @@ Q1: How do you replace the favicon?
 with <link rel="icon" href="/favicon.ico" /> in index.HTML
 
 Reflection Question 2: If you use nav-pills instead of nav-tabs the selected page is no
-longer highlighted in the menu, why? Hint: <NavLink> and the active css class.
-    We're using the nav-link css class, so if we use nav-pills we need to use nav-pill class
+longer highlighted in the menu, why? 
+    It is!
 
 Reflection Question 3: What is the meaning of a leading / in a path?
     It's relative or absolute paths, if we lead with / it's the absolute path

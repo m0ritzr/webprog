@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
-var HttpStatus = require('http-status-codes');
+const { v4: uuidv4 } = require('uuid');
+const { StatusCodes } = require('http-status-codes');
 
 (function () {
   const port = 8080;
@@ -25,23 +26,37 @@ var HttpStatus = require('http-status-codes');
         res.json(obj);
       } else {
         res.set('Content-Type', 'text/plain');
-        res.status(HttpStatus.BAD_REQUEST).send(req.params.name + ' is not a ' + kind);
+        res.status(StatusCodes.BAD_REQUEST).send(req.params.name + ' is not a ' + kind);
       }
     } else {
       res.set('Content-Type', 'text/plain');
-      res.status(HttpStatus.NOT_FOUND).send('can not find ' + req.params.name);
+      res.status(StatusCodes.NOT_FOUND).send('can not find ' + req.params.name);
     }
   }
 
   function handleOrder(req, res, next) {
+    try { 
     const order = {
       status: 'confirmed',
       timestamp: new Date(),
+      uuid: uuidv4(),
+      price: 0,
       order: req.body
     };
+    order.price = req.body.reduce(((acc, salad) => getSaladPrice(salad) + acc), 0);
     res.json(order);
+    } catch (e) {
+      res.set('Content-Type', 'text/plain');
+      res.status(StatusCodes.NOT_FOUND).send(e);
+    }
   }
 
+  function getSaladPrice(list) {
+    return list.reduce(((acc, ingridient) => acc + (inventory[ingridient]?.price) || throwError(ingridient)), 0)
+  }
+  function throwError(name){
+    throw "can not find " + name;
+  }
   function getList(req, res, next, kind) {
     let list = Object.keys(inventory).filter(name => inventory[name][kind]);
     res.json(list);

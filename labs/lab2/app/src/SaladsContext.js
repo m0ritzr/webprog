@@ -36,6 +36,10 @@ function saladsReducer(salads, action) {
       saladsList = salads.filter((s) => s.uuid !== action.salad.uuid);
       break;
     }
+    case "remove_all": {
+      saladsList = [];
+      break;
+    }
     default: {
       throw Error("Unknown action: " + action.type);
     }

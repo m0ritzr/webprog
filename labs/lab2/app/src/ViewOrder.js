@@ -1,7 +1,7 @@
 import { useSalads } from "./SaladsContext";
 import { useSaladsDispatch } from "./SaladsContext";
-import { useState } from "react";
 import { useToast } from "./ToastContext";
+import { useNavigate } from "react-router-dom";
 
 export function SaladItemDisplay({ salad, component }) {
   var label = "";
@@ -61,6 +61,7 @@ function ViewOrder() {
   const shoppingCart = useSalads();
   const dispatch = useSaladsDispatch();
   const { addToast } = useToast(); // Use the useToast hook
+  const navigate = useNavigate();
 
   const removeSalad = (salad) => {
     // Dispatch the 'removed' action to remove the salad
@@ -97,6 +98,8 @@ function ViewOrder() {
           message: `Total: ${data.price} kr`,
           type: "alert-success",
         });
+        navigate(`/view-order`);
+        dispatch({ type: "remove_all" });
       } else {
         addToast({
           id: `order-toast-failed`,
